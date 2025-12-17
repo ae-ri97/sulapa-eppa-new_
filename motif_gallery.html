@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sulapa Eppa</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #fcf6ea 0%, #f0e1c8 100%);
+            color: #4a3428;
+        }
+
+        #container {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background: linear-gradient(to bottom, rgba(74, 52, 40, 0.5), transparent);
+            /* Lighter brown gradient */
+            padding: 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #4a3428;
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .region-title {
+            color: #8b3a3a;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .header p {
+            color: #6b5644;
+            font-size: 0.875rem;
+        }
+
+        #loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #fcf6ea 0%, #f0e1c8 100%);
+            color: #4a3428;
+            font-size: 1.25rem;
+            z-index: 100;
+        }
+
+        #loading.hidden {
+            display: none;
+        }
+
+        #description-panel {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            width: 384px;
+            max-width: calc(100vw - 48px);
+            background: rgba(245, 230, 211, 0.9);
+            /* #f5e6d3 with opacity */
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 2px solid #d4a574;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        #description-panel.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        #description-panel h2 {
+            color: #8b3a3a;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        #description-panel p {
+            color: #4a3428;
+            line-height: 1.6;
+        }
+
+        .color-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .color-box {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            border: 2px solid rgba(74, 52, 40, 0.5);
+        }
+
+        .color-label {
+            color: #6b5644;
+            font-size: 0.875rem;
+        }
+
+
+
+
+
+        /* Mute Button */
+        #mute-btn {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 40px;
+            height: 40px;
+            background: rgba(245, 230, 211, 0.9);
+            border: 2px solid #d4a574;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            color: #8b3a3a;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        #mute-btn:hover {
+            transform: scale(1.1);
+            background: #4a3428;
+            color: #f5e6d3;
+        }
+
+        #controls-info {
+            position: absolute;
+            bottom: 24px;
+            left: 80px;
+            /* Moved right to make room for mute btn */
+            max-width: 320px;
+            background: rgba(245, 230, 211, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 16px;
+            color: #4a3428;
+            font-size: 0.875rem;
+            border: 2px solid #d4a574;
+        }
+
+        #controls-info h3 {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #8b3a3a;
+        }
+
+        #controls-info ul {
+            list-style: none;
+            color: #6b5644;
+        }
+
+        #controls-info li {
+            margin-bottom: 4px;
+        }
+
+        /* Back Button Style - Matching galeri.css */
+        .back-nav {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 300;
+        }
+
+        .back-nav a {
+            display: inline-block;
+            padding: 10px 20px;
+            background: transparent;
+            color: #4a3428;
+            border: 2px solid #4a3428;
+            border-radius: 30px;
+            font-family: 'Georgia', serif;
+            font-size: 14px;
+            /* Explicit size to match main page */
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-nav a:hover {
+            background: #4a3428;
+            color: #f5e6d3;
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .region-title {
+                font-size: 1.25rem;
+            }
+
+            #description-panel {
+                left: 24px;
+                right: 24px;
+                width: auto;
+                bottom: 120px;
+            }
+
+
+
+            #controls-info {
+                font-size: 0.75rem;
+                max-width: calc(100vw - 48px);
+            }
+        }
+
+        /* Transition Overlay */
+        #transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #4a3428;
+            /* Brown color */
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Subtle Background Pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+            pointer-events: none;
+            background-image:
+                repeating-linear-gradient(45deg, #4a3428 0, #4a3428 1px, transparent 0, transparent 50%),
+                repeating-linear-gradient(-45deg, #4a3428 0, #4a3428 1px, transparent 0, transparent 50%);
+            background-size: 30px 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Pattern -->
+    <div class="bg-pattern"></div>
+
+    <!-- Audio Element -->
+    <audio id="bg-music" loop></audio>
+
+    <!-- Mute Button -->
+    <button id="mute-btn">🔊</button>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Galeri Motif Tenun Sulawesi Selatan</h1>
+        <div class="region-title" id="region-name">Toraja</div>
+        <p>Klik motif untuk zoom & lihat detail • Klik area kosong untuk zoom out</p>
+    </div>
+
+    <div class="back-nav">
+        <a href="#" id="backButton">← BACK</a>
+    </div>
+
+    <!-- Transition Overlay -->
+    <div id="transition-overlay"></div>
+
+
+
+    <!-- 3D Canvas Container -->
+    <div id="container"></div>
+
+    <!-- Loading Screen -->
+    <div id="loading">Memuat galeri...</div>
+
+    <!-- Description Panel -->
+    <div id="description-panel">
+        <h2 id="motif-name"></h2>
+        <p id="motif-description"></p>
+        <div class="color-info">
+            <div class="color-box" id="color-box"></div>
+            <span class="color-label">Warna Dominan</span>
+        </div>
+    </div>
+
+    <!-- Controls Info -->
+    <div id="controls-info">
+        <h3>Navigasi:</h3>
+        <ul>
+
+            <li>🖱️ Klik motif = Zoom + detail</li>
+            <li>🖱️ Klik kosong = Zoom out</li>
+            <li>👆 Hover = Highlight</li>
+        </ul>
+    </div>
+
+    <script>
+        // Data motif untuk setiap daerah
+        const regions = {
+            toraja: {
+                name: "Toraja",
+                motifs: [
+                    {
+                        id: 1,
+                        name: "Pa' Tedong",
+                        description: "Tedong (kerbau), Melambangkan kesejahteraan dan kemakmuran bagi masyarakat Toraja. Kerbau merupakan binatang ternak peliharaan yang bernilai tinggi, terutama dalam penggunaannya dalam adat masyarakat Toraja.",
+                        color: 'black',
+                        imageUrl: "Assests/Toraja - Pa'tedong.jpeg"
+                    },
+                    {
+                        id: 2,
+                        name: "Pa' Barre Allo",
+                        description: "Barre (lingkaran) - Allo (matahari), Menyatakan tanda kemuliaan Tuhan yang telah menciptakan Matahari, lambang kebesaran, keagungan, kehidupan, dan kebanggaan bagi masyarakat Toraja",
+                        color: '#ED1C24',
+                        imageUrl: "Assests/Toraja - Pa'barre Allo.jpeg"
+                    },
+                    {
+                        id: 3,
+                        name: "Pa' Sekong Kandaure",
+                        description: "Motif Pa’ Sekong Kandaure memiliki makna filosofis ini bermakna agar keturunan atau anak cucu selalu hidup dalam kebahagiaan bagaikan cahaya dan indah seperti Kandaure.",
+                        color: '#BE2127',
+                        imageUrl: "Assests/Toraja - Pa' Sekong Kandaure.jpeg"
+                    }
+                ]
+            },
+            bugis: {
+                name: "Bugis",
+                motifs: [
+                    {
+                        id: 1,
+                        name: "Sobbi Tettong",
+                        description: "Motif Sobbi Tettong Bugis memiliki makna filosofis yang melambangkan keteguhan prinsip, kejujuran, dan kelurusan hati. Motif ini mengajarkan manusia untuk tetap tegak dalam pendirian, bertanggung jawab, dan hidup selaras dengan nilai siri’ na pacce, sehingga tercipta kehidupan yang stabil, sederhana, dan berwibawa.",
+                        color: '#CA93A1',
+                        imageUrl: "Assests/Bugis - Sobbi Tettong.jpeg"
+                    },
+                    {
+                        id: 2,
+                        name: "Lagosi",
+                        description: "Motif Bunga Lagosi ini memiliki makna cinta dan kasih sayang yang dilambangkan oleh bunga, serta kemakmuran dan keselamatan yang dilambangkan oleh daun, Motif ini juga menggambarkan persatuan dan kerjasama dalam masyarakat Bugis serta melambangkan ikatan kekeluargaan yang kuat.",
+                        color: '#203455',
+                        imageUrl: "Assests/Bugis - Lagosi.jpeg"
+                    },
+                    {
+                        id: 3,
+                        name: "Bombang",
+                        description: "Motif Bombang memiliki makna filosofis yang melambangkan gelombang kehidupan yang dinamis. Motif ini mengajarkan keteguhan, keberanian, dan ketahanan dalam menghadapi berbagai tantangan hidup, sejalan dengan nilai siri’ na pacce, agar manusia tetap kuat, seimbang, dan terus bergerak maju seperti ombak laut.",
+                        color: '#BE1E63',
+                        imageUrl: "Assests/Bugis - Bombang.jpeg"
+                    }
+                ]
+            },
+            mandar: {
+                name: "Mandar",
+                motifs: [
+                    {
+                        id: 1,
+                        name: "Balo",
+                        description: "Motif Balo atau Bunga Mandar memiliki makna filosofis yang melambangkan keindahan, kesuburan, dan keharmonisan hidup. Motif ini menggambarkan kelembutan budi, rasa syukur, serta harapan akan kehidupan yang sejahtera, rukun, dan penuh kebaikan, layaknya bunga yang tumbuh dan memberi keindahan bagi lingkungan Mandar",
+                        color: '#D71F72',
+                        imageUrl: "Assests/Mandar - Balo.jpeg"
+                    },
+                    {
+                        id: 2,
+                        name: "Sure' Salakka",
+                        description: "Motif Sure’ Sulakka memiliki makna filosofis sebagai simbol nasihat, tuntunan hidup, dan nilai kebijaksanaan. Motif ini melambangkan pesan leluhur agar manusia hidup dengan sikap bijak, berilmu, dan berpegang pada nilai adat serta moral, sehingga kehidupan berjalan terarah dan bermakna.",
+                        color: '#6B1D5B',
+                        imageUrl: "Assests/Mandar - Sure' Salakka.jpeg"
+                    },
+                    {
+                        id: 3,
+                        name: "Bunga Siruppa",
+                        description: "Motif Bunga Siruppa memiliki makna filosofis yang melambangkan keindahan, kelembutan, dan keharmonisan hidup. Motif ini mengajarkan manusia untuk hidup saling menghargai, menjaga hubungan yang rukun, serta menyebarkan kebaikan dan kasih sayang, layaknya bunga yang memberi keindahan bagi sekitarnya.",
+                        color: '#9D1E39',
+                        imageUrl: "Assests/Mandar - Bunga Siruppa.jpeg"
+                    }
+
+                ]
+            }
+        };
+
+        // Global variables
+        let scene, camera, renderer;
+        let motifMeshes = [];
+        let frameMeshes = [];
+        let raycaster, mouse;
+        let targetPosition = { x: 0, y: 0, z: 8 };
+        let isAnimating = false;
+        let container;
+        let currentRegionIndex = 0;
+        const regionKeys = ['toraja', 'bugis', 'mandar'];
+        let isTransitioning = false;
+
+        // DOM elements
+        const loadingEl = document.getElementById('loading');
+        const descriptionPanel = document.getElementById('description-panel');
+        const motifNameEl = document.getElementById('motif-name');
+        const motifDescriptionEl = document.getElementById('motif-description');
+        const colorBoxEl = document.getElementById('color-box');
+        const regionNameEl = document.getElementById('region-name');
+
+        // Parse URL params for region
+        function getRegionFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const regionParam = urlParams.get('region');
+            if (regionParam && regions[regionParam.toLowerCase()]) {
+                const index = regionKeys.indexOf(regionParam.toLowerCase());
+                if (index !== -1) {
+                    return index;
+                }
+            }
+            return 0; // Default to Toraja if not found
+        }
+
+        // Initialize the scene
+        function init() {
+            container = document.getElementById('container');
+
+            // Set initial region from URL
+            currentRegionIndex = getRegionFromUrl();
+
+            // Set Audio based on initial region
+            const regionKey = regionKeys[currentRegionIndex];
+            const regionData = regions[regionKey];
+            const audio = document.getElementById('bg-music');
+            audio.src = `Backsounds/${regionData.name}.mpeg`;
+            audio.volume = 0.5;
+
+            // Try to play audio
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Autoplay prevented. User interaction needed.");
+                    document.getElementById('mute-btn').textContent = '🔇';
+                });
+            }
+
+            // Setup Scene
+            scene = new THREE.Scene();
+            // scene.background = new THREE.Color(0x0f172a); // Removed for transparency
+
+            // Setup Camera
+            camera = new THREE.PerspectiveCamera(
+                75,
+                container.clientWidth / container.clientHeight,
+                0.1,
+                1000
+            );
+            camera.position.set(0, 0, 8);
+
+            // Setup Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            // Setup Raycaster
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            // Add Lighting
+            setupLighting();
+
+            // Create motif planes for current region
+            loadRegion(regionKeys[currentRegionIndex]);
+
+            // Add event listeners
+            container.addEventListener('click', onMouseClick);
+            container.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('resize', onWindowResize);
+
+
+            // Hide loading
+            setTimeout(() => {
+                loadingEl.classList.add('hidden');
+            }, 500);
+
+            // Start animation
+            animate();
+        }
+
+        // Setup lighting
+        function setupLighting() {
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0xffd700, 0.8);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            const pointLight2 = new THREE.PointLight(0xfbbf24, 0.4);
+            pointLight2.position.set(-5, -5, 5);
+            scene.add(pointLight2);
+        }
+
+        // Create texture from image file
+        function createTexture(imageUrl) {
+            const textureLoader = new THREE.TextureLoader();
+            const texture = textureLoader.load(
+                imageUrl,
+                (loadedTexture) => {
+                    loadedTexture.needsUpdate = true;
+                },
+                undefined,
+                (err) => {
+                    console.error('Error loading texture:', imageUrl, err);
+                }
+            );
+
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
+            texture.wrapS = THREE.ClampToEdgeWrapping;
+            texture.wrapT = THREE.ClampToEdgeWrapping;
+
+            return texture;
+        }
+
+        // Load region motifs
+        function loadRegion(regionKey) {
+            // Clear existing motifs
+            motifMeshes.forEach(mesh => scene.remove(mesh));
+            frameMeshes.forEach(frame => scene.remove(frame));
+            motifMeshes = [];
+            frameMeshes = [];
+
+            const region = regions[regionKey];
+            const motifs = region.motifs;
+
+            // Update region name
+            regionNameEl.textContent = region.name;
+
+            // Create planes for 3 motifs
+            const spacing = 5.5; // Increased from 4.5
+            const startX = -spacing;
+
+            motifs.forEach((motif, index) => {
+                // Create plane with texture
+                const texture = createTexture(motif.imageUrl);
+                const geometry = new THREE.PlaneGeometry(4.0, 4.0); // Increased from 3.5
+                const material = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    side: THREE.DoubleSide
+                });
+                const mesh = new THREE.Mesh(geometry, material);
+
+                // Position horizontally
+                mesh.position.x = startX + (index * spacing);
+                mesh.position.y = 0;
+                mesh.position.z = 0;
+
+                // Store motif data
+                mesh.userData = motif;
+
+                // Create frame
+                const frameGeometry = new THREE.BoxGeometry(4.2, 4.2, 0.15); // Increased from 3.7
+                const frameMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xd97706,
+                    metalness: 0.5,
+                    roughness: 0.5
+                });
+                const frame = new THREE.Mesh(frameGeometry, frameMaterial);
+                frame.position.copy(mesh.position);
+                frame.position.z = -0.1;
+
+                scene.add(frame);
+                scene.add(mesh);
+                motifMeshes.push(mesh);
+                frameMeshes.push(frame);
+            });
+        }
+
+        // Animate fade
+        function animateFade(material, from, to, callback) {
+            let current = from;
+            const step = (to - from) / 20;
+            const interval = setInterval(() => {
+                current += step;
+                material.opacity = current;
+                if ((step > 0 && current >= to) || (step < 0 && current <= to)) {
+                    material.opacity = to;
+                    clearInterval(interval);
+                    if (callback) callback();
+                }
+            }, 20);
+        }
+
+        // Mouse click handler
+        function onMouseClick(event) {
+            const rect = container.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(motifMeshes);
+
+            if (intersects.length > 0) {
+                const selected = intersects[0].object;
+                showMotifDescription(selected.userData);
+
+                // Zoom to selected motif
+                targetPosition = {
+                    x: selected.position.x,
+                    y: selected.position.y,
+                    z: 6 // Increased from 4 to show less zoom
+                };
+                isAnimating = true;
+            } else {
+                // Zoom out
+                targetPosition = { x: 0, y: 0, z: 8 };
+                isAnimating = true;
+                hideMotifDescription();
+            }
+        }
+
+        // Mouse move handler
+        function onMouseMove(event) {
+            const rect = container.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(motifMeshes);
+
+            // Reset all scales
+            motifMeshes.forEach(mesh => {
+                mesh.scale.set(1, 1, 1);
+            });
+
+            // Highlight hovered motif
+            if (intersects.length > 0) {
+                intersects[0].object.scale.set(1.1, 1.1, 1.1);
+                container.style.cursor = 'pointer';
+            } else {
+                container.style.cursor = 'default';
+            }
+        }
+
+        // Show motif description
+        function showMotifDescription(motif) {
+            motifNameEl.textContent = motif.name;
+            motifDescriptionEl.textContent = motif.description;
+            colorBoxEl.style.backgroundColor = motif.color;
+            descriptionPanel.classList.add('visible');
+        }
+
+        // Hide motif description
+        function hideMotifDescription() {
+            descriptionPanel.classList.remove('visible');
+        }
+
+        // Window resize handler
+        function onWindowResize() {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Smooth camera movement
+            if (isAnimating) {
+                camera.position.x += (targetPosition.x - camera.position.x) * 0.1;
+                camera.position.y += (targetPosition.y - camera.position.y) * 0.1;
+                camera.position.z += (targetPosition.z - camera.position.z) * 0.1;
+
+                if (Math.abs(camera.position.z - targetPosition.z) < 0.01) {
+                    isAnimating = false;
+                }
+            }
+
+            // Subtle rotation animation
+            motifMeshes.forEach((mesh, index) => {
+                mesh.rotation.z = Math.sin(Date.now() * 0.001 + index) * 0.02;
+            });
+
+            camera.lookAt(targetPosition.x, targetPosition.y, 0);
+            renderer.render(scene, camera);
+        }
+
+        // Start the application
+        init();
+
+        // Handle Back Button Transition
+        document.getElementById('backButton').addEventListener('click', function (e) {
+            e.preventDefault();
+            const overlay = document.getElementById('transition-overlay');
+            overlay.style.opacity = '1';
+
+            setTimeout(() => {
+                window.location.href = 'index.html?view=selection';
+            }, 500);
+        });
+
+        // Handle Mute Toggle
+        const muteBtn = document.getElementById('mute-btn');
+        const audio = document.getElementById('bg-music');
+
+        muteBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                muteBtn.textContent = '🔊';
+            } else {
+                audio.pause();
+                muteBtn.textContent = '🔇';
+            }
+        });
+    </script>
+</body>
+
+</html>

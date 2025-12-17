@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sulapa Eppa</title>
+    <link rel="stylesheet" href="galeri.css">
+    <script>
+        (function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('view') === 'selection') {
+                document.write('<style id="selection-style">.door-container{display:none !important;} #selectionPage{display:flex !important; opacity:1 !important;}</style>');
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="door-container">
+        <div class="title">SULAPA EPPA</div>
+        <div class="wall">
+            <div class="pattern"></div>
+            <div class="column column-left"></div>
+            <div class="column column-right"></div>
+        </div>
+
+        <div class="door-frame">
+            <div class="arch"></div>
+
+            <div class="door">
+                <div class="door-panel">
+                    <div class="panel-ornament"></div>
+                    <div class="swirl swirl-1"></div>
+                    <div class="swirl swirl-2"></div>
+                    <div class="swirl swirl-4"></div>
+                    <div class="bottom-panel"></div>
+                </div>
+
+                <div class="door-panel">
+                    <div class="panel-ornament"></div>
+                    <div class="swirl swirl-1"></div>
+                    <div class="swirl swirl-3"></div>
+                    <div class="swirl swirl-4"></div>
+                    <div class="bottom-panel"></div>
+                </div>
+
+                <div class="handle handle-left"></div>
+                <div class="handle handle-right"></div>
+            </div>
+        </div>
+
+        <div class="floor"></div>
+
+        <div class="floor"></div>
+
+        <!-- Audio Element -->
+        <audio id="bg-music" loop src="Backsounds/Makassar.mpeg"></audio>
+
+        <!-- Mute Button -->
+        <button id="mute-btn">🔊</button>
+
+        <!-- POPUP ELEMENTS -->
+        <div class="popup-overlay" id="popupOverlay"></div>
+        <div class="popup" id="doorPopup">
+            <div class="popup-content">
+                <h3>Door Action</h3>
+                <div class="popup-buttons">
+                    <button class="btn-open" onclick="handleDoorAction('open')">OPEN</button>
+                    <button class="btn-close" onclick="handleDoorAction('close')">CLOSE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SELECTION PAGE -->
+    <div class="selection-container" id="selectionPage">
+        <div class="house-item">
+            <img src="Assests/Bugis.png" alt="Bugis House">
+            <div class="house-label">BUGIS</div>
+        </div>
+        <div class="house-item central-item">
+            <img src="Assests/Toraja.png" alt="Toraja House" class="toraja-img">
+            <div class="house-label">TORAJA</div>
+        </div>
+        <div class="house-item">
+            <img src="Assests/Mandar.png" alt="Mandar House" class="mandar-img">
+            <div class="house-label">MANDAR</div>
+        </div>
+        <button class="back-button" onclick="goBackToDoor()">← BACK</button>
+        <button class="about-button" onclick="showAboutUs()">ABOUT US</button>
+    </div>
+
+    <!-- About Us Page (Hidden by default) -->
+    <div class="selection-page" id="aboutUsPage">
+        <div class="about-container">
+            <h1 class="about-title">ABOUT SULAPA EPPA</h1>
+
+            <div class="about-content-box">
+                <div class="about-section">
+                    <p class="about-text">
+                        Selamat datang di Sulapa Eppa.
+                        Website ini didedikasikan untuk melestarikan dan memperkenalkan kekayaan motif tenun tradisional
+                        dari berbagai daerah seperti Bugis, Toraja, dan Mandar.
+                    </p>
+                </div>
+
+                <div class="about-section">
+                    <h2 class="section-title">CREDITS</h2>
+                    <p class="credits-label">Developed by:</p>
+                    <h3 class="group-name">KELOMPOK 3</h3>
+                    <div class="credits-names">
+                        <p>Khadijah Meidina Eka Putri</p>
+                        <p>Ainun Mardiyah</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="back-button" onclick="hideAboutUs()" style="position: static; margin-top: 20px;">←
+                BACK</button>
+        </div>
+    </div>
+
+    <script src="galeri.js"></script>
+</body>
+
+</html>

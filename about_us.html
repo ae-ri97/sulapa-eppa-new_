@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Sulawesi Selatan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Lontara';
+            src: url('Fonts/Lontara.ttf') format('truetype');
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #fcf6ea 0%, #f0e1c8 100%);
+            font-family: 'Georgia', serif;
+            color: #4a3428;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Press Start 2P', 'Georgia', serif;
+            font-size: 2.6rem;
+            margin-bottom: 12px;
+            color: #ffffff;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0 #000, 6px 6px 18px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+
+        p {
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .back-button {
+            display: block;
+            width: 300px;
+            margin: 18px auto 40px;
+            padding: 14px 10px;
+            background: linear-gradient(180deg,#89a9ff 0%, #6f88ff 100%);
+            color: #eaf2ff;
+            border: none;
+            border-radius: 3px;
+            font-family: 'Press Start 2P', 'Georgia', serif;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 10px 10px 0 #000;
+            text-align: center;
+            transition: transform 0.14s ease, box-shadow 0.14s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 10px 14px 0 rgba(0,0,0,0.85);
+        }
+
+        /* ABOUT BOX */
+        .info-section {
+            width: 84%;
+            max-width: 980px;
+            margin: 6px auto;
+        }
+
+        .info-box {
+            border: 8px solid #ffffff;
+            padding: 6px;
+            color: #e9f2ff;
+            border-radius: 4px;
+            box-shadow: 0 10px 0 #000;
+            background: transparent;
+        }
+
+        .info-content {
+            max-height: 420px;
+            overflow-y: auto;
+            padding: 28px 32px;
+            background: linear-gradient(180deg,#14344a 0%, #1e4b66 100%);
+            border: 4px solid rgba(255,255,255,0.04);
+            color: #eaf3ff;
+        }
+
+        .section-title {
+            color: #ffd24d;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-align: center;
+            margin: 10px 0;
+            font-size: 12px;
+            text-shadow: 2px 2px 0 #000, 1px 1px 0 rgba(0,0,0,0.6);
+            font-family: 'Press Start 2P', 'Georgia', serif;
+        }
+
+        .culture-text {
+            text-align: center;
+            line-height: 1.7;
+            margin-bottom: 18px;
+            font-family: 'Lontara', serif;
+            font-size: 14px;
+        }
+
+        .credits-sub {
+            text-align: center;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+        }
+
+        .credits-list {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+            font-family: 'Georgia', serif;
+        }
+
+        .credits-list li {
+            margin: 6px 0;
+            font-weight: bold;
+        }
+
+        /* custom scrollbar */
+        .info-content::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .info-content::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.18);
+            border-radius: 6px;
+            border-left: 2px solid rgba(0,0,0,0.25);
+        }
+
+        .info-content::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.02);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>ABOUT SANDEQ</h1>
+    <p>
+        Selamat datang di Galeri Tenun Sulawesi Selatan.
+        Website ini didedikasikan untuk melestarikan dan memperkenalkan kekayaan motif tenun tradisional
+        dari berbagai daerah seperti Bugis, Toraja, dan Mandar.
+    </p>
+    <div class="info-section">
+        <div class="info-box" role="region" aria-label="About Sandeq">
+            <div class="info-content">
+                <h2 class="section-title">CULTURE</h2>
+                <p class="culture-text">
+                    This game is inspired by the Sandeq, a traditional sailing vessel from the Mandar culture of West Sulawesi, Indonesia. Recognized as one of the fastest traditional boats in the Austronesian archipelago, the Sandeq is a symbol of maritime heritage and seamanship.
+                </p>
+
+                <h2 class="section-title">CREDITS</h2>
+                <p class="credits-sub">Developed by:</p>
+                <ul class="credits-list">
+                    <li>KELOMPOK 4 GRAFIKA</li>
+                    <li>Yazid Al-Ghiefary</li>
+                    <li>Nabil Qastari</li>
+                </ul>
+
+                <h2 class="section-title">TENTANG WEBSITE</h2>
+                <p class="culture-text" style="text-align: left; font-family: 'Georgia', serif;">
+                    Website Galeri Tenun Sulawesi Selatan ini merupakan platform digital yang didedikasikan untuk melestarikan dan memperkenalkan kekayaan warisan budaya tekstil tradisional dari Sulawesi Selatan. Melalui website ini, pengunjung dapat menjelajahi berbagai motif tenun yang berasal dari etnis Bugis, Toraja, dan Mandar, lengkap dengan cerita dan makna filosofis di balik setiap motif.
+                </p>
+                <p class="culture-text" style="text-align: left; font-family: 'Georgia', serif;">
+                    Setiap motif tenun memiliki karakteristik unik yang mencerminkan identitas budaya, nilai-nilai spiritual, dan kearifan lokal masyarakat Sulawesi Selatan. Website ini tidak hanya berfungsi sebagai galeri visual, tetapi juga sebagai media edukasi untuk generasi muda dan masyarakat luas agar dapat lebih menghargai dan menjaga kelestarian budaya tenun tradisional Indonesia.
+                </p>
+                <p class="culture-text" style="text-align: left; font-family: 'Georgia', serif;">
+                    Kami berharap website ini dapat menjadi jembatan antara tradisi dan modernitas, serta menginspirasi lebih banyak orang untuk mencintai dan melestarikan warisan budaya bangsa.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <a href="index.html" class="back-button">BACK TO MENU</a>
+
+</body>
+
+</html>
